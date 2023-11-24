@@ -1,9 +1,9 @@
 const { Pool } = require('pg');
 const express = require('express');
-const dotenv = require('dotenv'); // Agrega esta línea
+//const dotenv = require('dotenv').config(); // Agrega esta línea
 
 // Carga las variables de entorno desde el archivo .env
-dotenv.config();
+//dotenv.config();
 
 const app = express();app.use(express.json());
 const port = 3000;
