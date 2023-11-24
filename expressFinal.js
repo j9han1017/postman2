@@ -1,17 +1,37 @@
 const { Pool } = require('pg');
-const express = require('express')
-const app= express()
-app.use(express.json());
-const port = 3000
+const express = require('express');
+const dotenv = require('dotenv'); // Agrega esta línea
+
+// Carga las variables de entorno desde el archivo .env
+dotenv.config();
+
+const app = express();app.use(express.json());
+const port = 3000;
+const contraseña = process.env.DB_PASSWORD;
 const pool = new Pool({
-    user: 'default',
-    host: "ep-hidden-cherry-69366556-pooler.us-east-1.postgres.vercel-storage.com",
-    database: 'verceldb',
-    password: "qGha6oAfej3C",
-    port: 5432,
-    ssl: {rejectUnauthorized: false}
+  user: 'default',
+  host: "ep-hidden-cherry-69366556-pooler.us-east-1.postgres.vercel-storage.com",
+  database: 'verceldb',
+  password: "qGha6oAfej3C",
+  port: 5432,
+  ssl: { rejectUnauthorized: false }
 });
 
+// Middleware para verificar la API key
+const verificarApiKey = (req, res, next) => {
+  const apiKey = req.get('x-api-key'); // Suponiendo que la clave se pasa en el encabezado 'contraseña'
+
+  // Verificar si la clave de API es válida (puedes implementar tu propia lógica aquí)
+  if (apiKey === contraseña) {
+    next(); // Continuar con la siguiente función en la cadena de middleware
+  } else {
+    res.status(401).send('Acceso no autorizado');
+  }
+};
+
+// Aplicar el middleware a todas las rutas que requieren la API key
+app.use('/students', verificarApiKey);
+app.use('/students/:id',verificarApiKey);
 
 
 app.get('/students', function(req, res){
