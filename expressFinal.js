@@ -1,7 +1,30 @@
+/**
+ * @swagger
+ * /students:
+ *   get:
+ *     summary: Obtener todos los estudiantes.
+ *     responses:
+ *       200:
+ *         description: Lista de estudiantes.
+ *         content:
+ *           application/json:
+ *             example:
+ *               - id: 1
+ *                 name: Juan
+ *                 lastname: Pérez
+ *                 notes: 90
+ *               - id: 2
+ *                 name: María
+ *                 lastname: Rodríguez
+ *                 notes: 85
+ */
+
+// Resto de tu código...
 const { Pool } = require('pg');
 const express = require('express');
 //const dotenv = require('dotenv').config(); // Agrega esta línea
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./swagger'); // Importa la configuración de Swagger
 // Carga las variables de entorno desde el archivo .env
 //dotenv.config();
 
@@ -32,6 +55,7 @@ const verificarApiKey = (req, res, next) => {
 // Aplicar el middleware a todas las rutas que requieren la API key
 app.use('/students', verificarApiKey);
 app.use('/students/:id',verificarApiKey);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 
 app.get('/students', function(req, res){
